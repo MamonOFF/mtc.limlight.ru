@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>МТС Imlight</title>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <style media="screen">
+    body{
+      background: url("bg.jpg") repeat;
+    }
+    .table{
+      background-color: white;
+    }
+    caption{
+      color: black;
+      font-size: 20px;
+    }
+
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <form class="form-signin" method="get"  name="enterForm">
+          <h2 class="form-signin-heading">Выберите год</h2>
+          <select class="form-control" name="year">
+            <option>2017</option>
+          </select>
+          <h2 class="form-signin-heading">Выберите месяц</h2>
+          <select class="form-control" name="month">
+            <option value="January">Январь</option>
+            <option value="February">Февраль</option>
+            <option value="March">Март</option>
+            <option value="April">Апрель</option>
+            <option value="May">Май</option>
+            <option value="June">Июнь</option>
+            <option value="July">Июль</option>
+            <option value="August">Август</option>
+            <option value="September">Сентябрь</option>
+            <option value="October">Октябрь</option>
+            <option value="November">Ноябрь</option>
+            <option value="December">Декабрь</option>
+          </select>
+          <h2 class="form-signin-heading">Введите номер</h2>
+          <p class="text-success">Пример: 79128281975</p>
+          <input type="text" class="form-control" name="number" value="" id="number">
+          <hr>
+          <button type="submit" name="button" class="btn btn-success" id="search">Показать</button>
+          <hr>
+        </form>
+
+        <hr id="preTable">
+        </div>
+
+      </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script>
+        $("form").submit(function(e) {
+            e.preventDefault();
+            var registerForm = document.forms["enterForm"];
+            var year = registerForm.elements["year"].value;
+            var month = registerForm.elements["month"].value;
+            var number = registerForm.elements["number"].value;
+
+            $.ajax({
+                type: "POST",
+                url: "/detallization",
+                data: JSON.stringify({year: year, month: month,number:number}),
+                dataType: "json",
+                contentType: "application/json",
+                success: function(data){
+
+                    $(".page-header").detach();
+                    $(".table").detach();
+                  //  console.log(data);
+
+
+                    $("#preTable").after("<div class='page-header'><h1>"+data.phoneNumber+" - "+"<span class='label label-danger'>"+data.servicesSum+" руб."+"</span><hr><blockquote>Тариф: "+data.tariff+"</blockquote></h1></div>");
+                    $(".page-header").after("<table class='table table-hover table-bordered' id='oneTable'><caption>Периодические услуги</caption><tr id='oneTr' class='active'><td>Название</td><td>Цена</td></tr></table><hr hr id='twoId'>");
+                    for(var i=0;i < data.service.length;i++){
+                      $("#oneTr").after("<tr><td>"+data.service[i].nameService+"</td><td>"+data.service[i].sumSer+"</td></tr>");
+                    }
+                    $("#twoId").after("<table class='table table-hover table-bordered' id='oneTable'><caption>Телефонные услуги - "+"<span class='label label-danger'>"+data.callsSum+" руб."+"</span></caption><tr id='twoTr' class='active'><td>Дата</td><td>Вид услуги</td><td>Длительность / Объём</td><td>Стоимость</td></tr></table>");
+                    for(var i=0;i < data.callsAll.length;i++){
+                      $("#twoTr").after("<tr><td>"+data.callsAll[i].date+"</td><td>"+data.callsAll[i].oneService+"</td><td>"+data.callsAll[i].time+"</td><td>"+data.callsAll[i].priceService+"</td></tr>");
+                    }
+
+                }
+                });
+        });
+    </script>
+  </body>
+</html>
