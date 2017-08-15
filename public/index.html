@@ -78,7 +78,6 @@
                     $(".table").detach();
                   //  console.log(data);
 
-
                     $("#preTable").after("<div class='page-header'><h1>"+data.phoneNumber+" - "+"<span class='label label-danger'>"+data.servicesSum+" руб."+"</span><hr><blockquote>Тариф: "+data.tariff+"</blockquote></h1></div>");
                     $(".page-header").after("<table class='table table-hover table-bordered' id='oneTable'><caption>Периодические услуги</caption><tr id='oneTr' class='active'><td>Название</td><td>Цена</td></tr></table><hr hr id='twoId'>");
                     for(var i=0;i < data.service.length;i++){
